@@ -28,27 +28,17 @@ class Location
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7)]
     private ?string $longitude = null;
 
-    #[ORM\OneToMany(mappedBy: 'Location', targetEntity: Measurement::class)]
-    private Collection $weatherForecasts;
-
     #[ORM\OneToMany(mappedBy: 'location', targetEntity: Measurement::class)]
     private Collection $measurements;
 
     public function __construct()
     {
-        $this->weatherForecasts = new ArrayCollection();
         $this->measurements = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCountry(): ?string
-    {
-        return $this->country;
     }
 
     public function getCity(): ?string
@@ -61,6 +51,11 @@ class Location
         $this->city = $city;
 
         return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
     }
 
     public function setCountry(string $country): static
@@ -97,37 +92,6 @@ class Location
     /**
      * @return Collection<int, Measurement>
      */
-    public function getWeatherForecasts(): Collection
-    {
-        return $this->weatherForecasts;
-    }
-
-    public function addWeatherForecast(Measurement $weatherForecast): static
-    {
-        if (!$this->weatherForecasts->contains($weatherForecast)) {
-            $this->weatherForecasts->add($weatherForecast);
-            $weatherForecast->setLocation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeWeatherForecast(Measurement $weatherForecast): static
-    {
-        if ($this->weatherForecasts->removeElement($weatherForecast)) {
-            // set the owning side to null (unless already changed)
-            if ($weatherForecast->getLocation() === $this) {
-                $weatherForecast->setLocation(null);
-            }
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * @return Collection<int, Measurement>
-     */
     public function getMeasurements(): Collection
     {
         return $this->measurements;
@@ -154,7 +118,7 @@ class Location
 
         return $this;
     }
-
-
-
+    public function __toString() {
+        return (string) $this->city;
+    }
 }
